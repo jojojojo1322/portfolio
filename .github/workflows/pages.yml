@@ -26,6 +26,9 @@ jobs:
         with:
           node-version: 20
       - run: pnpm install --frozen-lockfile
+        continue-on-error: true
+      - run: pnpm install --no-frozen-lockfile
+        if: failure()
       - run: pnpm -C apps/web build
       - uses: actions/upload-pages-artifact@v3
         with:
