@@ -20,6 +20,16 @@ type WorkflowItem = {
   points: string[];
 };
 
+type Experience = {
+  company: string;
+  role: string;
+  period: string;
+  location: string;
+  description: string;
+  highlights: string[];
+  stack: string[];
+};
+
 export const profile = {
   name: "조현재",
   title: "Frontend Developer",
@@ -53,6 +63,94 @@ export const metrics: Metric[] = [
     label: "데이터/안정성",
     value: "대규모 데이터 최적화",
     desc: "운항/스케줄 대시보드의 실시간 렌더링 최적화와 품질 자동화",
+  },
+];
+
+export const experiences: Experience[] = [
+  {
+    company: "대한항공 ETS-OMS",
+    role: "Frontend Lead",
+    period: "2023 - 2024",
+    location: "Seoul",
+    description:
+      "항공 스케줄링/운항 도메인 전반을 리딩하며 재사용 컴포넌트와 공통 워크플로를 재설계하고 디자인 시스템을 도입했습니다.",
+    highlights: [
+      "개발 공수 70% 절감: 공통 UI/비즈니스 모듈화 및 릴리즈 리듬 정립",
+      "KE Design System 1.0 + Monorepo로 테마/컴포넌트 일관성 확보",
+      "pre-push 자동화(lint/test/e2e)로 품질 게이트와 코드 리뷰 효율화",
+    ],
+    stack: [
+      "TypeScript",
+      "React",
+      "MUI",
+      "styled-components",
+      "KE Design System",
+      "Monorepo",
+      "Playwright",
+    ],
+  },
+  {
+    company: "대한항공 RSES",
+    role: "Frontend Engineer",
+    period: "2021 - 2023",
+    location: "Seoul",
+    description:
+      "대규모 항공 스케줄 데이터를 시각화하고 실시간 렌더링 성능을 최적화하며 반응형 UI를 고도화했습니다.",
+    highlights: [
+      "실시간 대시보드 렌더링 최적화로 체감 성능 개선",
+      "Grid/차트 인터랙션 표준화로 사용자 온보딩 비용 감소",
+      "국제화·반응형 대응으로 다양한 단말기 품질 확보",
+    ],
+    stack: [
+      "TypeScript",
+      "React",
+      "styled-components",
+      "MUI",
+      "Performance",
+      "i18n",
+    ],
+  },
+  {
+    company: "대한항공 운항통제 시스템",
+    role: "Frontend Engineer",
+    period: "2020 - 2021",
+    location: "Seoul",
+    description:
+      "운항 통제 UI와 Form UX를 개선하며 운영 효율과 안정성을 높이는 컴포넌트 체계를 구축했습니다.",
+    highlights: [
+      "Form UX 개선과 상태 검증 강화로 운영 실수 감소",
+      "모듈형 컨트롤 패널로 기능 추가 속도 향상",
+      "MUI/사내 DS 병행 적용으로 디자인 일관성 확보",
+    ],
+    stack: ["React", "styled-components", "MUI", "Form UX", "Design System"],
+  },
+  {
+    company: "AI 기반 문제집 생성 플랫폼 (Solves)",
+    role: "Tech Lead / FE",
+    period: "2024",
+    location: "Seoul",
+    description:
+      "LangChain.js 기반 모듈형 AI 파이프라인을 설계하고 Zod/템플릿 표준화로 검증 가능성을 높였습니다.",
+    highlights: [
+      "챗봇 파이프라인 모듈화로 기능 실험 속도 향상",
+      "Zod 스키마·프롬프트 템플릿 표준화로 품질 일관성 확보",
+      "모노레포 기반 재사용 패키지 설계",
+    ],
+    stack: ["LangChain.js", "Node.js", "TypeScript", "Zod", "Monorepo"],
+  },
+  {
+    company: "MeiTalk 스트리밍 플랫폼",
+    role: "Frontend Lead",
+    period: "2019 - 2020",
+    location: "Seoul",
+    description:
+      "글로벌 타겟 반응형 스트리밍 웹/앱을 리딩하며 사용자 설정 기능과 반응형 그리드를 설계했습니다.",
+    highlights: [
+      "반응형 레이아웃·다국어 대응으로 글로벌 UX 강화",
+      "팀 리딩 및 태스크 분배로 일정·품질 관리",
+      "실시간 스트리밍 뷰 최적화",
+    ],
+    stack: ["React", "styled-components", "Responsive UI", "Team Lead"],
   },
 ];
 
