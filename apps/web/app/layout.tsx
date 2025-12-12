@@ -13,8 +13,9 @@ const siteUrl =
   "https://jojojojo1322.github.io/portfolio.github.io";
 
 export const metadata: Metadata = {
-  title: "홍길동 | Frontend Engineer",
-  description: "프론트엔드 원페이지 포트폴리오",
+  title: "조현재 | Frontend Developer",
+  description:
+    "스케줄·운항·글로벌 서비스에서 UI 일관성과 생산성을 끌어올린 프론트엔드 개발자 포트폴리오",
   metadataBase: new URL(siteUrl),
 };
 
