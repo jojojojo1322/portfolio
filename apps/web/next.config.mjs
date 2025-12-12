@@ -1,5 +1,5 @@
 const isProd = process.env.NODE_ENV === "production";
-const repoBase = "/portfolio.github.io";
+const repoBase = "/portfolio";
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {

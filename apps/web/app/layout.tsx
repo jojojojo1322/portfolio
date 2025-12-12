@@ -10,7 +10,7 @@ const inter = Inter({
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://jojojojo1322.github.io/portfolio.github.io";
+  "https://jojojojo1322.github.io/portfolio";
 
 export const metadata: Metadata = {
   title: "홍길동 | Frontend Engineer",
