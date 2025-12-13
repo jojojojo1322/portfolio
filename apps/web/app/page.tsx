@@ -10,31 +10,67 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   architecture,
+  contacts,
   experiences,
   metrics,
   profile,
   projects,
-  stack,
+  skillGroups,
   workflow,
 } from "@/lib/data";
+
+function getExperienceInfo(startDateStr: string) {
+  const start = new Date(startDateStr);
+  const now = new Date();
+  const isValidStart = !Number.isNaN(start.getTime());
+  const baseMonths = isValidStart
+    ? (now.getFullYear() - start.getFullYear()) * 12 +
+      (now.getMonth() - start.getMonth()) -
+      (now.getDate() < start.getDate() ? 1 : 0)
+    : 0;
+  const totalMonths = Math.max(baseMonths, 0);
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+  const nowLabel = `${now.getFullYear()}.${String(
+    now.getMonth() + 1
+  ).padStart(2, "0")}`;
+
+  return {
+    experienceText: `${years}년 ${months}개월 (${nowLabel} 기준)`,
+    experienceDesc: `항공/글로벌 서비스 FE`,
+  };
+}
 
 const navItems = [
   { id: "about", label: "소개" },
   { id: "metrics", label: "임팩트" },
+  { id: "skills", label: "스킬" },
   { id: "experience", label: "경력" },
   { id: "projects", label: "프로젝트" },
-  { id: "architecture", label: "구성도" },
-  { id: "stack", label: "스택" },
+  { id: "operating", label: "구성·워크플로" },
   { id: "contact", label: "컨택" },
 ];
 
 export default function Page() {
+  const experienceInfo = getExperienceInfo(
+    profile.experienceStart ?? "2020-06-01"
+  );
+  const computedMetrics = metrics.map((item) =>
+    item.label === "총 경력"
+      ? {
+          ...item,
+          value: experienceInfo.experienceText,
+          desc: experienceInfo.experienceDesc,
+        }
+      : item
+  );
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30 text-foreground">
       <header className="sticky top-0 z-20 border-b bg-background/85 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 md:flex-row md:items-center md:justify-between">
           <div className="text-sm font-semibold">
-            {profile.name} · {profile.title}
+            {profile.name} · {profile.title} · {experienceInfo.experienceText}
           </div>
           <nav className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             {navItems.map((item) => (
@@ -64,11 +100,15 @@ export default function Page() {
       >
         <div className="grid items-start gap-10 md:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-2 text-sm text-muted-foreground shadow-sm">
-              <span className="font-semibold text-foreground">{profile.name}</span>
-              <span>· {profile.title}</span>
-              <span>· {profile.location}</span>
-              <span>· {profile.years}년</span>
+            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-2 text-sm shadow-sm">
+                <span className="font-semibold text-foreground">{profile.name}</span>
+                <span>· {profile.title}</span>
+                <span>· {profile.location}</span>
+              </span>
+              <span className="rounded-full border bg-card px-3 py-2 shadow-sm">
+                {experienceInfo.experienceText}
+              </span>
             </div>
             <h1 className="text-3xl font-bold leading-tight md:text-4xl">
               {profile.pitch}
@@ -86,38 +126,23 @@ export default function Page() {
             <Card className="border-dashed border-border/70 bg-card/60 shadow-sm">
               <CardContent className="space-y-2 pt-5 text-sm text-muted-foreground">
                 <p className="text-foreground font-semibold">
-                  대기업 프론트엔드 포트폴리오 포커스
+                  주요 포커스
                 </p>
-                <p>· 재사용성/일관성: 디자인 시스템·Monorepo로 통일된 UX</p>
-                <p>· 품질: pre-push 자동화, 릴리즈 게이트, e2e/테스트 습관</p>
-                <p>· 실시간/대규모 데이터: 항공 도메인 최적화 경험</p>
+                <p>· 재사용성/일관성: KE Design System 1.0 + Monorepo</p>
+                <p>· 품질: pre-push 자동화, lint/test/e2e 게이트, 릴리즈 리듬</p>
+                <p>· 실시간/대규모 데이터: 항공 스케줄·운항 도메인 최적화</p>
               </CardContent>
             </Card>
-            <div className="flex flex-wrap gap-3">
-              <Button size="lg" asChild>
-                <Link href={`mailto:${profile.email}`}>이메일로 연락하기</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href={profile.github}>GitHub</Link>
-              </Button>
-              {profile.linkedin ? (
-                <Button size="lg" variant="ghost" asChild>
-                  <Link href={profile.linkedin}>LinkedIn</Link>
-                </Button>
-              ) : null}
-            </div>
           </div>
 
           <Card className="w-full border-border/70 shadow-md">
             <CardHeader>
               <CardTitle className="text-lg">Contact · Ready to Engage</CardTitle>
-              <CardDescription>
-                빠른 의사결정이 가능한 채널과 핵심 수치
-              </CardDescription>
+
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid gap-3 sm:grid-cols-3">
-                {metrics.map((item) => (
+                {computedMetrics.map((item) => (
                   <div
                     key={item.label}
                     className="rounded-xl border bg-muted/40 px-4 py-3"
@@ -143,6 +168,15 @@ export default function Page() {
                   </Link>
                 </p>
                 <p className="flex justify-between">
+                  <span>Email(회사)</span>
+                  <Link
+                    className="hover:text-primary underline-offset-4 hover:underline"
+                    href={`mailto:${profile.workEmail}`}
+                  >
+                    {profile.workEmail}
+                  </Link>
+                </p>
+                <p className="flex justify-between">
                   <span>GitHub</span>
                   <Link
                     className="hover:text-primary underline-offset-4 hover:underline"
@@ -150,6 +184,10 @@ export default function Page() {
                   >
                     {profile.github}
                   </Link>
+                </p>
+                <p className="flex justify-between">
+                  <span>Phone</span>
+                  <span className="text-foreground">{profile.phone}</span>
                 </p>
                 <p className="flex justify-between">
                   <span>LinkedIn</span>
@@ -166,11 +204,11 @@ export default function Page() {
           <div className="flex flex-col gap-2">
             <h2 className="text-2xl font-semibold md:text-3xl">Impact Metrics</h2>
             <p className="text-sm text-muted-foreground">
-              생산성, 재사용성, 대규모 데이터 안정성을 입증하는 지표
+              경력, 재사용성, 품질 자동화의 핵심 지표
             </p>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
-            {metrics.map((item) => (
+            {computedMetrics.map((item) => (
               <Card key={item.label} className="border-border/70 shadow-sm">
                 <CardHeader>
                   <CardTitle className="text-base">{item.label}</CardTitle>
@@ -190,13 +228,46 @@ export default function Page() {
       </section>
 
       <section
+        id="skills"
+        className="mx-auto max-w-6xl px-4 py-14 space-y-6 md:py-16"
+      >
+        <div className="flex flex-col gap-2">
+          <h2 className="text-2xl font-semibold md:text-3xl">Skills</h2>
+          <p className="text-sm text-muted-foreground">
+            항공/글로벌 서비스에 맞춰 검증된 스택과 도구
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {skillGroups.map((group) => (
+            <Card key={group.title} className="border-border/70 shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-base">{group.title}</CardTitle>
+                {group.note ? (
+                  <CardDescription className="text-xs text-muted-foreground">
+                    {group.note}
+                  </CardDescription>
+                ) : null}
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-2">
+                {group.items.map((item) => (
+                  <Badge key={item} variant="secondary">
+                    {item}
+                  </Badge>
+                ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section
         id="experience"
         className="mx-auto max-w-6xl px-4 py-14 space-y-6 md:py-16"
       >
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-semibold md:text-3xl">Experience</h2>
           <p className="text-sm text-muted-foreground">
-            대기업 기준으로 검증된 리딩/협업/품질 경험
+            실무 리딩/협업/품질 경험
           </p>
         </div>
         <div className="grid gap-4">
@@ -258,9 +329,11 @@ export default function Page() {
               <Card key={project.title} className="h-full border-border/70 shadow-sm">
                 <CardHeader>
                   <CardTitle className="text-lg">{project.title}</CardTitle>
-                  <CardDescription className="text-sm font-medium text-foreground">
-                    {project.impact}
-                  </CardDescription>
+                  {project.impact ? (
+                    <CardDescription className="text-sm font-medium text-foreground">
+                      {project.impact}
+                    </CardDescription>
+                  ) : null}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-sm leading-relaxed text-muted-foreground">
@@ -292,89 +365,54 @@ export default function Page() {
         </div>
       </section>
 
-      <section
-        id="architecture"
-        className="mx-auto max-w-6xl px-4 py-12 space-y-6 md:py-16"
-      >
-        <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-semibold md:text-3xl">프로젝트 구성도</h2>
-          <p className="text-sm text-muted-foreground">
-            원페이지 포트폴리오용 FE 구성과 품질 도구
-          </p>
-        </div>
-        <Card className="border-border/70 shadow-sm">
-          <CardContent className="pt-6">
-            <pre className="whitespace-pre-wrap rounded-lg bg-muted px-4 py-3 text-sm font-mono leading-7 text-muted-foreground">
-              {architecture.join("\n")}
-            </pre>
-          </CardContent>
-        </Card>
-      </section>
-
-      <section className="bg-muted/20">
-        <div className="mx-auto max-w-6xl px-4 py-12 space-y-6 md:py-14">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-2xl font-semibold md:text-3xl">워크플로</h2>
-            <p className="text-sm text-muted-foreground">
-              대기업 환경을 기준으로 한 협업/품질 습관
-            </p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {workflow.map((item) => (
-              <Card key={item.title} className="h-full">
-                <CardHeader>
-                  <CardTitle className="text-base">{item.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {item.points.map((point) => (
-                    <p
-                      key={point}
-                      className="text-sm leading-relaxed text-muted-foreground"
-                    >
-                      • {point}
-                    </p>
-                  ))}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="stack"
-        className="mx-auto max-w-6xl px-4 py-12 space-y-4 md:py-14"
-      >
-        <h2 className="text-2xl font-semibold md:text-3xl">Stack</h2>
-        <div className="flex flex-wrap gap-2">
-          {stack.map((item) => (
-            <Badge key={item} variant="secondary">
-              {item}
-            </Badge>
-          ))}
-        </div>
-      </section>
 
       <section
         id="contact"
         className="mx-auto max-w-6xl px-4 py-12 space-y-4 md:py-16"
       >
         <h2 className="text-2xl font-semibold md:text-3xl">Contact</h2>
-        <p className="text-sm text-muted-foreground">
-          빠른 답변은 이메일이 가장 확실합니다.
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <Button asChild>
-            <Link href={`mailto:${profile.email}`}>Email</Link>
-          </Button>
-          {profile.linkedin ? (
-            <Button variant="outline" asChild>
-              <Link href={profile.linkedin}>LinkedIn</Link>
-            </Button>
-          ) : null}
-          <Button variant="outline" asChild>
-            <Link href={profile.github}>GitHub</Link>
-          </Button>
+        
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card className="border-border/70 shadow-sm">
+            <CardContent className="space-y-3 pt-4">
+              {contacts.map((item) => (
+                <div
+                  key={item.label}
+                  className="flex items-center justify-between text-sm"
+                >
+                  <span className="text-muted-foreground">{item.label}</span>
+                  {item.href ? (
+                    <Link
+                      className="font-medium text-foreground underline-offset-4 hover:underline"
+                      href={item.href}
+                    >
+                      {item.value}
+                    </Link>
+                  ) : (
+                    <span className="font-medium text-foreground">
+                      {item.value}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+          <Card className="border-border/70 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-base">바로 연락하기</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-3">
+              <Button asChild>
+                <Link href={`mailto:${profile.email}`}>개인 이메일</Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href={`mailto:${profile.workEmail}`}>회사 이메일</Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link href={profile.github}>GitHub</Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </section>
     </main>
