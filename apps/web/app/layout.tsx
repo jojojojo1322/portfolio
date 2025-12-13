@@ -8,9 +8,19 @@ const inter = Inter({
   display: "swap",
 });
 
+const repoName = process.env.GITHUB_REPOSITORY?.split("/")[1];
+const isProd = process.env.NODE_ENV === "production";
+const defaultBasePath =
+  isProd && repoName && repoName !== `${process.env.GITHUB_REPOSITORY?.split("/")[0]}.github.io`
+    ? `/${repoName}`
+    : "";
+const basePath =
+  process.env.NEXT_PUBLIC_BASE_PATH ??
+  process.env.BASE_PATH ??
+  defaultBasePath;
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://jojojojo1322.github.io/portfolio.github.io";
+  `https://jojojojo1322.github.io${basePath}`;
 
 export const metadata: Metadata = {
   title: "조현재 | Frontend Developer",
